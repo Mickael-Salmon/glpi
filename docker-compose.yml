@@ -1,0 +1,29 @@
+﻿services:
+  mariadb:
+    image: mariadb:latest
+    env_file:
+      - ./mariadb.env  # Chemin vers ton fichier .env pour MariaDB
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    networks:
+      - glpinet
+
+  glpi:
+    image: mickaelsalmon/glpi
+    depends_on:
+      - mariadb
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      DB_SERVER: mariadb  # Définir le serveur de base de données à utiliser
+    networks:
+      - glpinet
+    restart: always
+
+networks:
+  glpinet:
+    driver: bridge
+
+volumes:
+  mariadb_data:
